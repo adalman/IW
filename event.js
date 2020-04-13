@@ -21,14 +21,44 @@ function getBgColors (tab) {
     injectedMethod(tab, 'getBgColors', function (response) {
       var colors = response.data;
       if (colors && colors.length) {
-        alert('Colors on page: ' + colors);
+        //alert('Colors on page: ' + colors);
+        console.log(colors);
+        //return colors;
+        chrome.runtime.sendMessage({
+            msg: "completed", 
+            data: {
+                subject: "colors",
+                content: colors
+            }
+        });
+        //sendResponse({colors: colors});
       } else {
         alert('No background colors were found! :(');
       }
-      return true;
+    //eturn true;
     })
   }
   
   // When the browser action is clicked, call the
   // getBgColors function.
-  chrome.browserAction.onClicked.addListener(getBgColors);
+//chrome.browserAction.onClicked.addListener(getBgColors);
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+    console.log(request);
+    if (request.from === "popup" && request.subject === "DOMInfo") {
+        getBgColors(request.tab); 
+        //sendResponse({colors: getBgColors(request.tab)});
+    }
+});
+//       console.log("here");
+//       if (request.from === "popup" && request.subject === "DOMInfo") {
+//         ///var colors =  
+//        // sendResponse({colors: })
+//       }
+//   })
+//   chrome.runtime.sendMessage({
+//     msg: "completed", 
+//     data: {
+//         subject: "colors",
+//         content: getBgColors
+//     }
+// });
