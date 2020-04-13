@@ -115,24 +115,42 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
           let bgColor = element.target.style.backgroundColor;
           /***Used to run a one line query on webpage***/
           chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+
+
+            function modifyDOM() {
+                //You can play with your DOM here or check URL against your regex
+                console.log('Tab script:');
+                console.log(document.body.innerHTML);
+                return document.body.innerHTML;
+            }
+
             chrome.tabs.executeScript(tabs[0].id, {
-              code: `document.body.style.setProperty('background-color','${bgColor}','important');
-              var divs = document.getElementsByTagName('div');
-              var canvases = document.getElementsByTagName('canvas');
-              var tables = document.getElementsByTagName('table');
-              for (let div of divs) {
-                div.style.setProperty('background-color','transparent','important');
+              //code: '(' + modifyDOM + ')();'
+              // changes background color to black of selected elements
+              code: `var nodes = document.getElementsByTagName('*');
+              for (var node of nodes) {
+                  if (node.style.backgroundColor = '${bgColor}') {
+                      node.style.backgroundColor = 'rgb(0,0,0)';
+                  }
               }
-              if(canvases){
-                for (let canvas of canvases) {
-                  canvas.style.setProperty('background-color','transparent','important');
-                }
-              }
-              if(tables){
-                for (let table of tables) {
-                  table.style.setProperty('background-color','transparent','important');
-                }
-              }`
+               `
+            //   `document.body.style.setProperty('background-color','${bgColor}','important');
+            //   var divs = document.getElementsByTagName('div');
+            //   var canvases = document.getElementsByTagName('canvas');
+            //   var tables = document.getElementsByTagName('table');
+            //   for (let div of divs) {
+            //     div.style.setProperty('background-color','transparent','important');
+            //   }
+            //   if(canvases){
+            //     for (let canvas of canvases) {
+            //       canvas.style.setProperty('background-color','transparent','important');
+            //     }
+            //   }
+            //   if(tables){
+            //     for (let table of tables) {
+            //       table.style.setProperty('background-color','transparent','important');
+            //     }
+            //   }`
             //   `var nodes = document.querySelectorAll('*');
             //         var node, nodeArea, bgColor, i;
                     
@@ -147,14 +165,26 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             //             }
             //         }`
               
-            });
-          });
-          /***Used to run a one line query on webpage***/
+            }, function(results){
+                console.log('Popup script:')
+                chrome.tabs.executeScript(tabs[0].id, {
+                    code: `var dom = '${results[0]}';
+                    for 
+                    `
+                })
+                //console.log(results[0]);
+
         });
-      }
+            // chrome.tabs.executeScript(tabs[0].id, {
+            //     code: '(' + modifyDOM + ')();'}, 
+            //     function(results){
+            //         console.log('Popup script:')
+            //         console.log(results[0]);
+            //     });
 
-
-
+          });
+        });
+      };
 });
 
 
