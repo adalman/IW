@@ -28,7 +28,6 @@ methods.getBgColors = function(){
       bgColor = bgColor.replace(/ /g, '');
       // If the color is not white or fully transparent...
       if (
-        bgColor != 'rgb(255,255,255)' &&
         !(bgColor.indexOf('rgba') === 0 && bgColor.substr(-3) === ',0)')
       ) {
         // ...set or override it in the colors object,

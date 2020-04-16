@@ -5,6 +5,17 @@ function injectedMethod (tab, method, callback) {
       chrome.tabs.sendMessage(tab.id, { method: method }, callback);
     });
   }
+
+  function injectedMethod2 (tab, bgColor1, bgColor2, method, callback) {
+    console.log(bgColor1 + " " + bgColor2);
+    chrome.tabs.executeScript(tab.id, {code: 'var bgColor1 = ' + JSON.stringify(bgColor1) + ';' + 
+                                             'var bgColor2 = ' + JSON.stringify(bgColor2) + ';'}, function() {
+      chrome.tabs.executeScript(tab.id, { file: 'elements.js' }, function(){
+        chrome.tabs.sendMessage(tab.id, { method: method }, callback);
+      });
+    })
+    
+  }
   
 //   function getBgColors (tab) {
 //     // When we get a result back from the getBgColors
@@ -38,6 +49,15 @@ function getBgColors (tab) {
     //eturn true;
     })
   }
+
+function getDomElements(tab, bgColor1, bgColor2) {
+  //console.log(document.getElementsByTagName('*'));
+  injectedMethod2(tab, bgColor1, bgColor2, 'getElements', function (response) {
+    console.log(response);
+  //eturn true;
+  })
+
+}
   
   // When the browser action is clicked, call the
   // getBgColors function.
@@ -47,6 +67,10 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if (request.from === "popup" && request.subject === "DOMInfo") {
         getBgColors(request.tab); 
         //sendResponse({colors: getBgColors(request.tab)});
+    }
+    if ((request.from === 'popup') && (request.subject === 'Elements')) {
+      console.log("here");
+      getDomElements(request.tab, request.bgColor1, request.bgColor2);
     }
 });
 //       console.log("here");
