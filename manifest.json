@@ -1,12 +1,12 @@
 {
     "manifest_version": 2,
   
-    "name": "background-colorpeek",
+    "name": "Background Color Changer",
     "version": "1.0",
-    "description": "Get every background-color from the current tab.",
+    "description": "Manually change any background-color from the current tab.",
   
     "browser_action": {
-            "default_title": "Test Extension",
+            "default_title": "IW",
             "default_popup": "popup.html"
     },
   
@@ -19,6 +19,12 @@
         "matches": ["<all_urls>"],
         "js": ["jquery-3.1.1.min.js"]
     }],
-    
+
+    "icons": {
+      "16": "icon16.png",
+      "48": "icon48.png",
+      "128": "icon128.png"
+    },
+
     "permissions": ["<all_urls>"]
   }

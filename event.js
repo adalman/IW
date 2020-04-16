@@ -27,15 +27,6 @@ function injectedMethod2(tab, bgColor1, bgColor2, method, callback) {
   );
 }
 
-//   function getBgColors (tab) {
-//     // When we get a result back from the getBgColors
-//     // method, alert the data
-//     injectedMethod(tab, 'getBgColors', function (response) {
-//       alert('Elements in tab: ' + response.data);
-//       return true;
-//     });
-//   }
-
 // Get background-color values from the current tab
 // and open them in Colorpeek.
 function getBgColors(tab) {
@@ -70,7 +61,6 @@ function getDomElements(tab, bgColor1, bgColor2) {
 
 // When the browser action is clicked, call the
 // getBgColors function.
-//chrome.browserAction.onClicked.addListener(getBgColors);
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   console.log(request);
   if (request.from === "popup" && request.subject === "DOMInfo") {
@@ -82,16 +72,4 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     getDomElements(request.tab, request.bgColor1, request.bgColor2);
   }
 });
-//       console.log("here");
-//       if (request.from === "popup" && request.subject === "DOMInfo") {
-//         ///var colors =
-//        // sendResponse({colors: })
-//       }
-//   })
-//   chrome.runtime.sendMessage({
-//     msg: "completed",
-//     data: {
-//         subject: "colors",
-//         content: getBgColors
-//     }
-// });
+
