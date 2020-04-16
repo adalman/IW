@@ -27,6 +27,25 @@ function injectedMethod2(tab, bgColor1, bgColor2, method, callback) {
   );
 }
 
+function injectedMethod3(tab, colors, method, callback) {
+  console.log(JSON.stringify(colors));
+  chrome.tabs.executeScript(
+    tab.id,
+    {
+      code:
+        "var colors = " +
+        JSON.stringify(colors) +
+        ";"
+    },
+    function () {
+      chrome.tabs.executeScript(tab.id, { file: "reset.js" }, function () {
+        chrome.tabs.sendMessage(tab.id, { method: method }, callback);
+      });
+    }
+  );
+  getBgColors(tab);
+}
+
 // Get background-color values from the current tab
 // and open them in Colorpeek.
 function getBgColors(tab) {
@@ -59,6 +78,15 @@ function getDomElements(tab, bgColor1, bgColor2) {
   });
 }
 
+function resetElements(tab, colors) {
+  console.log(colors);
+  //console.log(document.getElementsByTagName('*'));
+  injectedMethod3(tab, colors, "resetElements", function (response) {
+    // console.log(response);
+    //eturn true;
+  });
+}
+
 // When the browser action is clicked, call the
 // getBgColors function.
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
@@ -70,6 +98,11 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   if (request.from === "popup" && request.subject === "Elements") {
     console.log("here");
     getDomElements(request.tab, request.bgColor1, request.bgColor2);
+  }
+
+  if (request.from === "popup" && request.subject === "Reset") {
+    console.log("here");
+    resetElements(request.tab, request.colors);
   }
 });
 

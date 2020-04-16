@@ -26,5 +26,5 @@
       "128": "icon128.png"
     },
 
-    "permissions": ["<all_urls>"]
+    "permissions": ["<all_urls>", "storage"]
   }
