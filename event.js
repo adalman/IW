@@ -1,3 +1,7 @@
+/*
+Main background script that listens for messages from the popup and executes
+content scripts upon message received.
+*/
 // Execute the inject.js in a tab and call a method,
 // passing the result to a callback function.
 function injectedMethod(tab, method, callback) {

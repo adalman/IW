@@ -1,6 +1,8 @@
-// This helps avoid conflicts in case we inject
-// this script on the same page multiple times
-// without reloading.
+/* 
+Injected content script that scrapes all of the background colors from the page,
+sorting them based on area size.
+Created with help from this tutorial: https://css-tricks.com/colorpeek-part-2-building-first-chrome-extension/
+*/
 var injected =
   injected ||
   (function () {
@@ -8,18 +10,14 @@ var injected =
     // we can use from our event script.
     var methods = {};
 
-    // Return all of the background-color values
     methods.getBgColors = function () {
-      // Stores the colors and the number of occurrences
       var colors = {};
       // Get all the nodes on a page
       var nodes = document.querySelectorAll("*");
-      // Instantiate variables we'll use later
       var node, nodeArea, bgColor, i;
 
       // Loop through all the nodes
       for (i = 0; i < nodes.length; i++) {
-        // The current node
         node = nodes[i];
         // The area in pixels occupied by the element
         nodeArea = node.clientWidth * node.clientHeight;
@@ -27,11 +25,8 @@ var injected =
         bgColor = window.getComputedStyle(node)["background-color"];
         // Strip spaces from the color for succinctness
         bgColor = bgColor.replace(/ /g, "");
-        // If the color is not white or fully transparent...
+        // If the color is not fully transparent
         if (!(bgColor.indexOf("rgba") === 0 && bgColor.substr(-3) === ",0)")) {
-          // ...set or override it in the colors object,
-          // adding the current element area to the
-          // existing value.
           colors[bgColor] = (colors[bgColor] >> 0) + nodeArea;
         }
       }
@@ -50,9 +45,6 @@ var injected =
       sendResponse
     ) {
       var data = {};
-      // If the method the extension has requested
-      // exists, call it and assign its response
-      // to data.
       if (methods.hasOwnProperty(request.method))
         data = methods[request.method]();
       // Send the response back to our extension.

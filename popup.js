@@ -1,4 +1,7 @@
-console.log("popup!");
+/*
+Code to control popup window and actions, including color load, color selection, 
+color change, and reset.
+*/
 var colors = {};
 var original = {}; 
 var query = { active: true, currentWindow: true };
@@ -6,7 +9,18 @@ chrome.tabs.query(query, callback);
 
 function callback(tabs) {
   var currentTab = tabs[0]; // there will be only one in this array
-  console.log(currentTab); // also has properties like currentTab.id
+  // console.log(currentTab); // also has properties like currentTab.id
+  chrome.storage.sync.get(currentTab, function(data) { 
+    // console.log(data);
+    if (data.id && data.id == currentTab.id) {
+      // console.log("first");
+      chrome.storage.sync.set({currentTab: 1});
+    }
+    else {
+      //console.log(data);
+      //onsole.log("not first");
+    }
+  });
   chrome.runtime.sendMessage({
     tab: currentTab,
     from: "popup",
@@ -34,7 +48,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
       preferredFormat: "hex",
       change: function (color) {
         // reset  height
-        document.body.style.height = (document.body.style.height - 200) + "px";
+        // document.body.style.height = (document.body.style.height - 200) + "px";
         // chrome.storage.sync.get("height", function (obj) {
         //   console.log(obj);
         //   // document.body.style.height = obj + "px";
@@ -51,7 +65,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
           ", " +
           Math.round(color._b) +
           ")";
-        console.log(temp);
+        // console.log(temp);
         color = color.toString().toUpperCase();
         $(ido).val(color);
         // var params = {}; // use params to update the background color of this button, cache original values
@@ -107,18 +121,18 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     backgroundButton.addEventListener("click", (element) => {
       chrome.storage.sync.set({"height": document.body.style.height}); // save original height
       var orig = document.body.style.height;
-      console.log(orig);
-      orig = orig + 200;
+      // console.log(orig);
+      orig = orig + 200; // expand window
       
       document.body.style.height = orig + "px"; // make it bigger
-      console.log(document.body.style.height);
+       console.log(document.body.style.height);
     });
   }
 
   const resetButton = document.getElementsByClassName("reset");
-  console.log(resetButton);
+  // console.log(resetButton);
   resetButton[0].addEventListener("click", (element) => {
-    console.log("clicked");
+    // console.log("clicked");
     // send original color back
     chrome.tabs.query({ active: true, currentWindow: true }, function (
       tabs
@@ -130,7 +144,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         var currentTab = tabs[0]; // there will be only one in this array
         // console.log(currentTab); // also has properties like currentTab.id
 
-        console.log(original);
+        // console.log(original);
         chrome.runtime.sendMessage(
           {
             tab: currentTab,
