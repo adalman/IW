@@ -3,20 +3,19 @@ Code to control popup window and actions, including color load, color selection,
 color change, and reset.
 */
 var colors = {};
-var original = {}; 
+var original = {};
 var query = { active: true, currentWindow: true };
 chrome.tabs.query(query, callback);
 
 function callback(tabs) {
   var currentTab = tabs[0]; // there will be only one in this array
   // console.log(currentTab); // also has properties like currentTab.id
-  chrome.storage.sync.get(currentTab, function(data) { 
+  chrome.storage.sync.get(currentTab, function (data) {
     // console.log(data);
     if (data.id && data.id == currentTab.id) {
       // console.log("first");
-      chrome.storage.sync.set({currentTab: 1});
-    }
-    else {
+      chrome.storage.sync.set({ currentTab: 1 });
+    } else {
       //console.log(data);
       //onsole.log("not first");
     }
@@ -46,6 +45,8 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 
     $(btn).spectrum({
       preferredFormat: "hex",
+      showInitial: true,
+      color: color,
       change: function (color) {
         // reset  height
         // document.body.style.height = (document.body.style.height - 200) + "px";
@@ -70,19 +71,18 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         $(ido).val(color);
         // var params = {}; // use params to update the background color of this button, cache original values
         //var colors = {}; // key is what it was, value is what it is changed to
-        
-        
-        var bgColor1 = btn.style.backgroundColor; 
-        var bgColor2 = temp; 
+
+        var bgColor1 = btn.style.backgroundColor;
+        var bgColor2 = temp;
         colors[temp] = btn.style.backgroundColor;
         btn.style.backgroundColor = color;
 
         // update original color array
         // console.log('bgColor1 ' + bgColor1);
-        var orig = original[bgColor1.replace(/\s/g, '')];
-        original[bgColor2.replace(/\s/g, '')] = orig;
+        var orig = original[bgColor1.replace(/\s/g, "")];
+        original[bgColor2.replace(/\s/g, "")] = orig;
         //console.log(orig);
-        
+
         //params[parseHEX($(idi).val())] = parseHEX(color);
         // console.log(color);
 
@@ -119,13 +119,13 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 
   for (let backgroundButton of backgroundButtons) {
     backgroundButton.addEventListener("click", (element) => {
-      chrome.storage.sync.set({"height": document.body.style.height}); // save original height
+      chrome.storage.sync.set({ height: document.body.style.height }); // save original height
       var orig = document.body.style.height;
       // console.log(orig);
       orig = orig + 200; // expand window
-      
+
       document.body.style.height = orig + "px"; // make it bigger
-       console.log(document.body.style.height);
+      console.log(document.body.style.height);
     });
   }
 
@@ -134,9 +134,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   resetButton[0].addEventListener("click", (element) => {
     // console.log("clicked");
     // send original color back
-    chrome.tabs.query({ active: true, currentWindow: true }, function (
-      tabs
-    ) {
+    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
       var query = { active: true, currentWindow: true };
       chrome.tabs.query(query, callback1);
 
@@ -150,12 +148,11 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
             tab: currentTab,
             from: "popup",
             subject: "Reset",
-            colors: original
+            colors: original,
           },
           function (response) {}
         );
       }
     });
-
-  })
+  });
 });

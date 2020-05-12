@@ -11,7 +11,7 @@
     },
   
     "background": {
-      "scripts": ["event.js"],
+      "scripts": ["background.js"],
       "persistent": false
     },
 
